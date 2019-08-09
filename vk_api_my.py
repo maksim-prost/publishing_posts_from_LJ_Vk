@@ -13,7 +13,7 @@ import os
 
 class VkApi:
 	def __init__(self, token,  api_version='5.84'):
-		self.params={ 'access_token': token,'version':api_version}
+		self.params={ 'access_token': token,'v':api_version}
 		self.url_api ='https://api.vk.com/method/'
 	def auth(self):
 		pass

@@ -108,7 +108,8 @@ class PostBlog(Debug):
 		for url in self.list_link_post:
 			try:
 				name_post = 'Eror load post'
-				name_post = self.function_load(url)
+				name_post = "{}  от {}".format(self.function_load(url),datetime.now().strftime('%d-%m-%Y')
+)
 				i = self.count_public_post()
 				# print('time_public ', url, time_public(i))
 				PostBlog.lp.load_post(name_post,self.post_for_public,url,time_public(i))
@@ -262,16 +263,12 @@ class Class1957(PostBlog):
 class Conteiner_Blogs:
 	def __init__(self,*arg):
 		list_blog = (Botya,Remi,BlauKraeh,Class1957,Bulgat, Ballaev,ONB,)
-		# list_blog = (Class1957,)
 		self.blogers=[blog(*arg) for blog in list_blog]
 		self.number_public_post = PostBlog.count_public_post()
 	def get_data_for_post(self):
-		# self.blogers[0].lp.load_list_saves()
 		for blog in self.blogers:
-			# print('update current links to publications')
 			self.number_public_post += blog.get_list_link_post() and blog.get_data_for_post()
 		self.blogers[0].clean_album()
-		# return self.get_number_public_post 
 	def get_number_public_post(self):
 		return self.number_public_post
 
@@ -294,11 +291,6 @@ def main(token, group_id, user_id, creator='ALL',url_creator=None):
 		print(traceback.format_exc())
 	finally:
 		print("Окончание цикла работы парсинга","Опубликовано {} постов" .format(CB.get_number_public_post()),file=message_display)
-		# break
-		# time.sleep(60*60*3)
-		
-	# print('exit')
-	return 
 
 class MessageDisplay:
 	def write(self, message):

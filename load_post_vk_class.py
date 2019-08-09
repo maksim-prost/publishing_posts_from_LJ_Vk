@@ -74,13 +74,13 @@ def load_img_PIL(src,album_id,img=None):
 		{'group_id':group_id ,'album_id':album_id})["upload_url"]
 		ur = vk_api.requests.post(upload_url, files = {'file1': file})
 		ur = ur.ok and ur.json() 
-		# print('ur-',ur)
+		print('ur-',ur)
 		if ur:
 			img_id =  vk_user.method('photos.save',
 			{'group_id':group_id,'server':ur['server'],'album_id':album_id,
 						'photos_list':ur['photos_list'],'hash':ur['hash']})[0]['id']
-
-			rez =  img_id.split('_')[1], *size
+			print(img_id)
+			rez =  img_id, *size#.split('_')[1], *size
 	except:
 		print(traceback.format_exc())
 		print('Error load image durring process VK')

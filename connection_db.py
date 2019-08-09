@@ -18,6 +18,7 @@ class InteractionWithDB():
 		self.connection.close()
 	def load_list_save(self,date=1518452746):
 		try:
+			result = []
 			with self.connection.cursor() as cursor:
 				date = time.strftime('%Y-%m-%d',time.localtime(date))
 				sql = "SELECT URL FROM URL_PUBLIC_POSTS WHERE DATE_PUBLIC > '{}' ".format(date)
@@ -30,7 +31,7 @@ class InteractionWithDB():
 			sql = "INSERT INTO URL_PUBLIC_POSTS (URL, DATE_PUBLIC) VALUES (%s, %s)"
 			for url in list_to_save:
 				cursor.execute(sql, (url, time.strftime('%Y-%m-%d')))
-				print('commit url', url)
+				# print('commit url', url)
 		self.connection.commit()
 	def count_today_posts(self):
 		try:
