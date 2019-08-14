@@ -1,2 +1,3 @@
 work: python get_data_from_LJ_class.py 9a3e3c787c27cdcffb50046fb31b70c4dbb6e1b78dacb8a91d7e1a6e28d6041731d6918fb84822f54483d
 clock: python sleep.py
+worker: python worker.py
