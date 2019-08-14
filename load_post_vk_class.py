@@ -42,7 +42,10 @@ class Load_Post():
 		#gjследние 300 публикацмй на странице
 		self.list_saves = self.vk_user.method('execute',
 			{'code':
-			'return %s;'%'+'.join(map(lambda s: 'API.wall.get({"offset":%s,"owner_id":%d,"count":100,"filter":"postponed,all"}).items@.text'%(s,-group_id), range(0,300,100)))})
+			'return %s;'%'+'.join(map(lambda s: 'API.wall.get({"offset":%s,"owner_id":%d,"count":100}).items@.text'%(s,-group_id), range(0,300,100)))})
+		self.list_saves += self.vk_user.method('execute',
+			{'code':
+			'return API.wall.get({"owner_id":%d,"filter":"postponed"}).items@.text;'%-group_id})
 		# self.list_saves=self.connection_db.load_list_save()
 		# print(self.list_saves)
 	def load_count_puplic_post(self):
@@ -51,6 +54,7 @@ class Load_Post():
 			{'code':
 			'return API.wall.get({"owner_id":%d,"count":50}).items@.date;'%(-group_id)})
 		# print(self.group_id,'sdddd', list_public_post)
+		
 		self.list_public_post.reverse()
 		return len([i for i in self.list_public_post if int(i)>current_day])
 	
