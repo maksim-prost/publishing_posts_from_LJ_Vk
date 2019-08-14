@@ -261,17 +261,18 @@ class Conteiner_Blogs:
 
 def main(token, group_id, user_id, creator='ALL',url_creator=None):
 	
-	message_display = MessageDisplay()
-	print("Запуск парсинга, в скрытом режиме","Группа Красные блогеры" ,file=message_display )
+	# message_display = MessageDisplay()
+	# print("Запуск парсинга, в скрытом режиме","Группа Красные блогеры" ,file=message_display )
 	# while True:
 	CB = Conteiner_Blogs(token,group_id, user_id)
-	print("Запуск парсинга",file=message_display)
+	# print("Запуск парсинга",file=message_display)
 	try:
 		CB.public_post()
 	except:
 		print(traceback.format_exc())
 	finally:
-		print("Окончание цикла работы парсинга","Опубликовано {} постов" .format(CB.get_number_public_post()),file=message_display)
+		pass
+		# print("Окончание цикла работы парсинга","Опубликовано {} постов" .format(CB.get_number_public_post()),file=message_display)
 
 class MessageDisplay:
 	def write(self, message):

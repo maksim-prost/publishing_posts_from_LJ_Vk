@@ -75,3 +75,4 @@ virtualenv==15.0.1
 Werkzeug==0.15.4
 xdiagnose==3.8.4.1
 XlsxWriter==0.7.3
+pytube==9.5.1
