@@ -3,11 +3,12 @@ import vk_api_my as vk_api
 
 import os
 import time
+from datetime import date
 import traceback
 
 import time, datetime
 from load_image import create_img_for_title, load_img
-from connection_db import InteractionWithDB
+# from connection_db import InteractionWithDB
 # from smenaIP import requests_random_IP
 MAIN_ALBUM = 260894583
 СURENT_VIDEO_ALBUM = 4793
@@ -20,26 +21,49 @@ class Load_Post():
 		group_id, user_id = group_id_, user_id_
 		self.group_id, self.user_id = group_id, user_id
 		vk_user = self.vk_user
-		self.connection_db = InteractionWithDB()
-		self.count_puplic_post = self.connection_db.count_today_posts()
+		# self.connection_db = InteractionWithDB()
+		self.count_puplic_post = self.load_count_puplic_post()#connection_db.count_today_posts()
 		self.album_id = self.get_curent_album()  
 		self.album_video_id = СURENT_VIDEO_ALBUM
 		self.load_list_saves()
 	def get_curent_album(self):
+		
+		return MAIN_ALBUM
 		album_id = self.connection_db.curent_album_id()
 		
 		return album_id
 
 	def clean (self):
-		vk_user = self.vk_user
-		clean(self.group_id, self.connection_db.list_album_id())	
+		return
+		# vk_user = self.vk_user
+		# clean(self.group_id, self.connection_db.list_album_id())	
+	
 	def load_list_saves(self):
-		self.list_saves=self.connection_db.load_list_save()
-	def load_post(self,title_post,post_for_public,link,time_puplic_,repost_id=None):
-		if self.return_count_puplic_post()>50:
+		#gjследние 300 публикацмй на странице
+		self.list_saves = self.vk_user.method('execute',
+			{'code':
+			'return %s;'%'+'.join(map(lambda s: 'API.wall.get({"offset":%s,"owner_id":%d,"count":100,"filter":"postponed,all"}).items@.text'%(s,-group_id), range(0,300,100)))})
+		# self.list_saves=self.connection_db.load_list_save()
+		# print(self.list_saves)
+	def load_count_puplic_post(self):
+		current_day = int(time.mktime((date.today()).timetuple()))
+		self.list_public_post = self.vk_user.method('execute',
+			{'code':
+			'return API.wall.get({"owner_id":%d,"count":50}).items@.date;'%(-group_id)})
+		# print(self.group_id,'sdddd', list_public_post)
+		self.list_public_post.reverse()
+		return len([i for i in self.list_public_post if int(i)>current_day])
+	
+	def load_post(self,title_post,post_for_public,link,repost_id=None):
+		if self.count_puplic_post>50:
 			raise Exception('Превышено ограничение на 50 публикаций в сутки')
 		global  time_puplic
-		time_puplic = time_puplic_
+		time_interval = int(60*60*24/50)#ограничение на 50 публикаций в сутки
+		time_puplic = int(time.time())
+		if self.list_public_post[-1]>time_puplic:
+			time_puplic = self.list_public_post[-1]
+		time_puplic += time_interval
+		self.list_public_post.append(time_puplic)
 		album_id,albom_video_id,group_id= self.album_id ,self.album_video_id, self.group_id
 		dict_img = []
 		text=[]
@@ -59,7 +83,7 @@ class Load_Post():
 		
 		if post_wiki_page(title_post,text,dict_img,album_id,repost_id):
 			self.count_puplic_post += 1
-			self.connection_db.uppdate_link((link,))
+			# self.connection_db.uppdate_link((link,))
 		# clean_empty_album(albom_video_id,album_id)
 	
 	def return_count_puplic_post(self):
@@ -74,12 +98,12 @@ def load_img_PIL(src,album_id,img=None):
 		{'group_id':group_id ,'album_id':album_id})["upload_url"]
 		ur = vk_api.requests.post(upload_url, files = {'file1': file})
 		ur = ur.ok and ur.json() 
-		print('ur-',ur)
+		# print('ur-',ur)
 		if ur:
 			img_id =  vk_user.method('photos.save',
 			{'group_id':group_id,'server':ur['server'],'album_id':album_id,
 						'photos_list':ur['photos_list'],'hash':ur['hash']})[0]['id']
-			print(img_id)
+			# print(img_id)
 			rez =  img_id, *size#.split('_')[1], *size
 	except:
 		print(traceback.format_exc())
@@ -142,7 +166,7 @@ def split_wiki(text,name_wiki,number_chunc):
 
 def post_wiki_page(title,text,dict_img,albom_id,repost_id):
 	# print('wiki page, albom_id', albom_id)
-	from get_data_from_LJ_class import sub_all
+	from format_html import sub_all
 	url = text[-1]
 	text = ''.join(text)
 	text_message = '\n'.join([title])#+url.replace(']','').replace('[','').split('|'))
@@ -220,7 +244,7 @@ def template_clean_albom(group_id,type_album, type_count, type_delete):
 
 def wall_clean():
 	for post in vk_user.method('wall.get',{"owner_id":-group_id,'count':100})['items']:
-		print(post['id'])
+		# print(post['id'])
 		vk_user.method('wall.delete',{'group_id':group_id,'post_id':post['id']})
 
 def main():

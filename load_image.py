@@ -1,12 +1,13 @@
 # from load_post_vk_class import get_html
 from PIL import Image, ImageFont,ImageDraw
 from io import BytesIO, BufferedReader
-import requests
+# import requests
 import traceback
+from initial_scraper import get_html
 
-def get_html(url, stream = False):
-	if stream: return requests.get(url, stream = True)
-	return requests.get(url).text
+# def get_html(url, stream = False):
+# 	if stream: return requests.get(url, stream = True)
+# 	return requests.get(url).text
 
 def create_img_for_title(text):
 	'''

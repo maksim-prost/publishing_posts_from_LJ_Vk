@@ -1,15 +1,12 @@
-
-url = 'https://vk.com/'
-url_api ='https://api.vk.com/method/'
 from time import sleep
 # from smenaIP import requests_random_IP
 # requests = requests_random_IP()
 import requests
-import os
-# 
+# import os
 
-# user_id= 117562096
-# group_id =165089751
+url = 'https://vk.com/'
+url_api ='https://api.vk.com/method/'
+
 
 class VkApi:
 	def __init__(self, token,  api_version='5.84'):
