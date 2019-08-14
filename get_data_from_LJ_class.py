@@ -114,7 +114,7 @@ class Bulgat(PostBlog):
 
 class BlauKraeh(PostBlog):
 	def __init__(self,*args):
-		PostBlog.__init__(self,'https://blau-kraehe.livejournal.com/','Яна Завацкая',token,group_id, user_id)
+		PostBlog.__init__(self,'https://blau-kraehe.livejournal.com/','Яна Завацкая',*args)
 	def  get_list_data_for_public_bloger(self,begining=None):
 		begining = begining and begining+1
 		find_all = ('h2', {'class':"asset-name page-header2"})
