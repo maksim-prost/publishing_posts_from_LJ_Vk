@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 url = 'https://p-balaev.livejournal.com/'
 find_all = ('div', {'class':"entry-wrap js-emojis"})
 find = ('a',{'class':"subj-link"})
-		
+find_date = ('abbr' ,{'class':"updated"})
 soup = BeautifulSoup(get_html(url),'lxml')
 
 # token = '9a3e3c787c27cdcffb50046fb31b70c4dbb6e1b78dacb8a91d7e1a6e28d6041731d6918fb84822f54483d'

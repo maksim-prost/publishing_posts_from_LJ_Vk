@@ -175,8 +175,8 @@ class Ballaev(PostBlog):
 		# return len(self.list_link_post)
 	def function_load(self,url,title):
 		soup = get_html(url)
-		title = BeautifulSoup(soup, 'lxml').find_all('h4', {'class':"entry-title-text"})[-1].text
-		title = title.split('entry')[0]
+		# title = BeautifulSoup(soup, 'lxml').find_all('h4', {'class':"entry-title-text"})[-1].text
+		# title = title.split('entry')[0]
 		post = BeautifulSoup(soup, 'lxml').find('div',class_='entry-content')
 		self.load_post(url,title,post)
 		return title
