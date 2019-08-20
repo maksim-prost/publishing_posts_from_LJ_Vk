@@ -182,7 +182,7 @@ def post_wiki_page(title,text,dict_img,albom_id,repost_id):
 	if number_char < 16380:
 		id_wiki_page =vk_user.method('pages.save',{'text':text , 'group_id': group_id, 'title':title})
 	else:
-		title = title.replace('"','')
+		# title = title.replace('"','')
 		for i,chunc in enumerate(split_wiki(text,title,number_char//10000 +1)):
 			# print(i,chunc, sep='\n')
 			temp = vk_user.method('pages.save',

@@ -65,10 +65,13 @@ class PostBlog(Debug):
 		raise Exception('Метод д/б определен в дочернем классе')
 	def get_list_data_for_public(self,list_date,list_header,begining=1,end=None,list_urls=None):
 		soup = BeautifulSoup(get_html(self.url), 'lxml')
+		# print(list_urls)
 		list_urls = list_urls or list_header
 		return [(url.get('href'),head.text,date.text) 
 			for (url,head,date) in 
-				zip(soup.find_all(*list_urls)[begining:end],soup.find_all(*list_header)[begining:end],soup.find_all(*list_date)[begining:end]) ]
+				zip(soup.find_all(*list_urls)[begining:end],
+					soup.find_all(*list_header)[begining:end],
+					soup.find_all(*list_date)[begining:end]) ]
 		
 
 		# dates = [date.text for date in soup.find_all(*list_date)[begining:end]]
@@ -77,10 +80,12 @@ class PostBlog(Debug):
 		# return zip(urls,headers,dates)
 		
 	def public_current_post(self, list_data):
+		# print(list_data)
 		for url,head,date in list_data:
 			# name_post.replace('\n', ' ')
-			name_post = "{}  от {}".format(head.strip().replace('\n', ' '),date)
-			print(name_post, not name_post in PostBlog.lp.list_saves,sep='\n')
+			# title = title.replace('"','')
+			name_post = "{}  от {}".format(' '.join(head.replace('"','').split()),date)
+			# print(name_post, not name_post in PostBlog.lp.list_saves,sep='\n')
 			if  not name_post in PostBlog.lp.list_saves:
 				# print()
 				self.function_load(url,head)
@@ -95,8 +100,10 @@ class Bulgat(PostBlog):
 	def  get_list_data_for_public_bloger(self,begining=0):
 		list_date = ('abbr' ,{'class':"updated"})
 		list_header = ('dt', {'class':"entry-title"})
-		self.public_current_post(PostBlog.get_list_data_for_public(self,list_date,list_header,begining,2))
+		list_urls = ('a', {'class':"subj-link"})
+		self.public_current_post(PostBlog.get_list_data_for_public(self,list_date,list_header,begining,2,list_urls))
 	def function_load(self,url,title):
+		# print(url)
 		soup = BeautifulSoup(get_html(url), 'lxml')
 		post = soup.find('div',class_='entry-content')
 		self.load_post(url,title,post)
@@ -107,7 +114,6 @@ class BlauKraeh(PostBlog):
 	def  get_list_data_for_public_bloger(self,begining=1):
 		list_date = ('abbr', {'class':"datetime"})
 		list_header = ('a', {'class':"subj-link"})
-		
 		self.public_current_post(PostBlog.get_list_data_for_public(self,list_date,list_header,begining,3))
 		
 	def function_load(self,url,title):

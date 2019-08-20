@@ -3,11 +3,14 @@ def debug_LJ():
 	from initial_scraper import get_html
 	from bs4 import BeautifulSoup
 	url = 'https://onb2017.livejournal.com/'
+	url = 'https://bulgat.livejournal.com/'
 	find_all = ('div', {'class':"entry-wrap js-emojis"})
 	find = ('a',{'class':"subj-link"})
 	find_date = ('abbr' ,{'class':"updated"})
 	list_header = ('h3', {'class':"entryunit__title"})
 	list_date = ('span' ,{'class':"date-entryunit__day"})
+	list_date = ('abbr' ,{'class':"updated"})
+	list_header = ('dt', {'class':"entry-title"})
 	return BeautifulSoup(get_html(url),'lxml')#.find_all(*list_header)
 
 
@@ -33,5 +36,5 @@ def debug_vk():
 	return vk.method('execute',{'code':code})
 
 if __name__ == '__main__':
-	res = debug_vk()
-	# soup = debug_LJ()Оргии влиятельных миллионеров\n  от August 12th, 2019
+	# res = debug_vk()
+	soup = debug_LJ()#Оргии влиятельных миллионеров\n  от August 12th, 2019
