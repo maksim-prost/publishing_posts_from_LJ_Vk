@@ -134,7 +134,6 @@ class Botya(PostBlog):
 		post = soup.find('article', class_="b-singlepost-body entry-content e-content")
 		self.load_post(url,title,post)
 		return title
-
 class ONB(PostBlog):
 	def __init__(self,*args):
 		PostBlog.__init__(self,'https://onb2017.livejournal.com/','ONB 2017',*args)
@@ -150,7 +149,6 @@ class ONB(PostBlog):
 		post = soup.find("div", class_="b-singlepost-bodywrapper")
 		self.load_post(url,title,post)
 		return title	
-
 class Ballaev(PostBlog):
 	def __init__(self,*args):
 		PostBlog.__init__(self,'https://p-balaev.livejournal.com/','Петр Балаев',*args)
@@ -168,20 +166,17 @@ class Ballaev(PostBlog):
 		post = BeautifulSoup(soup, 'lxml').find('div',class_='entry-content')
 		self.load_post(url,title,post)
 		return title
-
-
 class Remi(PostBlog):
 	def __init__(self,*args):
 		PostBlog.__init__(self,'https://remi-meisner.livejournal.com/?skip=2',
 			'Реми Майнсер',*args)
 	def  get_list_data_for_public_bloger(self,begining=None):
-		find_all = ('a',{'class':"summary-comments"})
-		find = ()
-		return PostBlog.get_list_data_for_public(self,list_date,list_header,None,begining,3)
+		list_date =('abbr', {'class':"updated"} )
+		list_header= ('a', {'class':"subj-link"})
+		self.public_current_post(
+			PostBlog.get_list_data_for_public(self,list_date,list_header,begining,3))
 	def function_load(self,url,title): 
-		soup =  BeautifulSoup(get_html(url), 'lxml')
-		# title = soup.find_all('dt', class_="entry-title")[-1].text
-		post = soup.find('div',class_='entry-content')
+		post =  BeautifulSoup(get_html(url), 'lxml').find('div',class_='entry-content')
 		self.load_post(url,title,post)
 		return title
 class Class1957(PostBlog):
@@ -218,8 +213,8 @@ class Class1957(PostBlog):
 
 class Conteiner_Blogs:
 	def __init__(self,*arg):
-		list_blog = (Botya,Remi,BlauKraeh,Class1957,Bulgat, Ballaev,ONB,)
-		list_blog = Bulgat, Botya, BlauKraeh, Ballaev, ONB,
+		list_blog = (Botya,Remi,BlauKraeh,Class1957,Bulgat, Ballaev,ONB, Remi,
+		# Bulgat, Botya, BlauKraeh, Ballaev, ONB, Remi,
 		self.blogers=[blog(*arg) for blog in list_blog]
 	
 

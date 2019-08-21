@@ -26,13 +26,20 @@ def format_post(page, prefix=''):
 	for video in page.find_all('iframe'):
 		try:
 			src = video.get('src')
+			print(src)
 			mo = re.search(r'vid=([0-9A-Za-z_-]{11})&',src) # r'(?:v=|\/)([0-9A-Za-z_-]{11})' - форрмат ссылки ютюбф
 			if not mo: mo = re.search(r'embed/([0-9A-Za-z_-]{11})',src)
+			# if not mo: mo = re.search(r'([0-9A-Za-z_-]{11})',src)
+			print(mo.group(1))
 			link_video ='https://www.youtube.com/watch?v=' +  mo.group(1)  
-			yt = pytube.YouTube(link_video)
-			shablon = '\nvideo {} {}\n'.format(link_video,yt.title.replace(' ','_'))
+			try:	
+				yt = pytube.YouTube(link_video)
+				title = yt.title.replace(' ','_')
+			except:
+				title = 'Some_videos'
+			shablon = '\nvideo {} {}\n'.format(link_video,title)
 		except:
-			shablon = 'video {} Some_videos'.format(src)
+			shablon = '\n {} Some_videos '.format(src)
 		temp_string =temp_string .replace(str(video),shablon)#'.'.join((yt.title,yt.streams.first().subtype))+'\n\n\n')
 
 	for style in page.find_all('span'):

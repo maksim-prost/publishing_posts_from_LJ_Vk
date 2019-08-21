@@ -4,6 +4,7 @@ def debug_LJ():
 	from bs4 import BeautifulSoup
 	url = 'https://onb2017.livejournal.com/'
 	url = 'https://bulgat.livejournal.com/'
+	url = 'https://remi-meisner.livejournal.com/?skip=2'
 	find_all = ('div', {'class':"entry-wrap js-emojis"})
 	find = ('a',{'class':"subj-link"})
 	find_date = ('abbr' ,{'class':"updated"})
@@ -12,7 +13,8 @@ def debug_LJ():
 	list_date = ('abbr' ,{'class':"updated"})
 	list_header = ('dt', {'class':"entry-title"})
 	return BeautifulSoup(get_html(url),'lxml')#.find_all(*list_header)
-
+# a class="subj-link"
+# abbr class="updated"
 
 def debug_vk():
 	from vk_api_my import VkApi 

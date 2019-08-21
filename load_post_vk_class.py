@@ -84,9 +84,11 @@ class Load_Post():
 				dict_img.append('photo-{}_{}'.format(group_id,image_id))
 
 			elif marker=='video':
+				print(content[:2], albom_video_id)
 				vk_link_video = load_video(*content[:2],albom_video_id)
 				line ='\n<center>[[{}|600x400px;player| ]]</center>\n'.format(vk_link_video)
 				dict_img.append(vk_link_video)
+				print(line)
 			text.append(line+'\n')
 		
 		if post_wiki_page(title_post,text,dict_img,album_id,repost_id):
@@ -151,8 +153,9 @@ def load_video(url_video,about_video,albom_id):
 	r = vk_user.method('video.save',
 			{'group_id':group_id ,'album_id':albom_id,
 			 'name':about_video, 'link':url_video})
+	print(r)
 	upload_url = r["upload_url"]
-	id_video = r['vid']
+	id_video = r['video_id']
 	# print('\n id_video \n', id_video)
 	r = vk_api.requests.get(upload_url)
 
