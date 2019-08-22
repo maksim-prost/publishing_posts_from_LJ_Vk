@@ -85,8 +85,9 @@ class PostBlog(Debug):
 			# name_post.replace('\n', ' ')
 			# title = title.replace('"','')
 			name_post = "{}  от {}".format(' '.join(head.replace('"','').split()),date)
-			print(name_post, PostBlog.lp.list_saves[:3],sep='\n')
-			if  not name_post in PostBlog.lp.list_saves:
+			print(name_post, PostBlog.lp.list_saves.count(name_post))
+			# if  not name_post in PostBlog.lp.list_saves:
+			if not PostBlog.lp.list_saves.count(name_post):
 				# print()
 				self.function_load(url,head)
 				PostBlog.lp.load_post(name_post,self.post_for_public,url)
