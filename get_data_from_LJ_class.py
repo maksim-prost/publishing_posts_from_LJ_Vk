@@ -85,7 +85,7 @@ class PostBlog(Debug):
 			# name_post.replace('\n', ' ')
 			# title = title.replace('"','')
 			name_post = "{}  от {}".format(' '.join(head.replace('"','').split()),date)
-			# print(name_post, not name_post in PostBlog.lp.list_saves,sep='\n')
+			print(name_post, PostBlog.lp.list_saves[:3],sep='\n')
 			if  not name_post in PostBlog.lp.list_saves:
 				# print()
 				self.function_load(url,head)
@@ -215,6 +215,7 @@ class Conteiner_Blogs:
 	def __init__(self,*arg):
 		# list_blog = Botya,Remi,BlauKraeh,Class1957,Bulgat, Ballaev,ONB, 
 		list_blog =  Bulgat, Botya, BlauKraeh, Ballaev, ONB, Remi,
+		list_blog  = Ballaev,
 		self.blogers=[blog(*arg) for blog in list_blog]
 	
 
