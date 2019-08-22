@@ -215,7 +215,7 @@ class Conteiner_Blogs:
 	def __init__(self,*arg):
 		# list_blog = Botya,Remi,BlauKraeh,Class1957,Bulgat, Ballaev,ONB, 
 		list_blog =  Bulgat, Botya, BlauKraeh, Ballaev, ONB, Remi,
-		list_blog  = Ballaev,
+		# list_blog  = Ballaev,
 		self.blogers=[blog(*arg) for blog in list_blog]
 	
 
