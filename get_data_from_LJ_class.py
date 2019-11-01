@@ -214,7 +214,7 @@ class Class1957(PostBlog):
 
 class Conteiner_Blogs:
 	def __init__(self,*arg):
-		list_blog =  Bulgat, Botya, BlauKraeh, Ballaev, ONB, Remi,
+		list_blog =  Botya, BlauKraeh, Ballaev, ONB, Remi, Bulgat,
 		# list_blog  = Ballaev,
 		self.blogers=[blog(*arg) for blog in list_blog]
 	
