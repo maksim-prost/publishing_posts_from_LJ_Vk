@@ -17,4 +17,4 @@ while 1:
 	# main()
 	# q.enqueue(main(token, group_id, user_id))
 	main(token, group_id, user_id)
-	sleep(60*60*6)
+	sleep(60*60*10)
