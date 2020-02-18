@@ -1,4 +1,4 @@
-git add *
+git add -A
 msg='heroku RUN'
 if [ -n "$1" ]
 then

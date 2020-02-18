@@ -13,6 +13,7 @@ from load_image import create_img_for_title, load_img
 MAIN_ALBUM = 260894583
 СURENT_VIDEO_ALBUM = 4793
 СURENT_VIDEO_ALBUM = 4838
+PAGE_LOAD_URL_ID = 54334503
 class Load_Post():
 	def __init__(self,group_id_, user_id_,token):
 		self.vk_user = vk_api.VkApi(token ,api_version='5.92')
@@ -26,6 +27,15 @@ class Load_Post():
 		self.album_id = self.get_curent_album()  
 		self.album_video_id = СURENT_VIDEO_ALBUM
 		self.load_list_saves()
+	
+	def save_list_saves(self):
+
+		print("Деструктор за работой",len(self.list_saves))
+		print(self.list_saves)
+		print(self.vk_user.method('pages.save',
+				{'text':self.list_saves, 'group_id': group_id, 'page_id':PAGE_LOAD_URL_ID}))
+
+
 	def get_curent_album(self):
 		code = '''
 			var current_album = API.photos.getAlbums({"owner_id":%d,"count":1}).items[0];
@@ -34,10 +44,11 @@ class Load_Post():
 			return API.photos.createAlbum({"owner_id":%d,"title":"альбом для фотографий %s","upload_by_admins_only":1}).id;
 		'''%(-group_id, group_id, time.strftime("от %d %m %Y",time.gmtime()))
 		return self.vk_user.method('execute',{'code':code})
-		return MAIN_ALBUM
-		album_id = self.connection_db.curent_album_id()
 		
-		return album_id
+		# return MAIN_ALBUM
+		# album_id = self.connection_db.curent_album_id()
+		
+		# return album_id
 
 	def clean (self):
 		return
@@ -46,12 +57,16 @@ class Load_Post():
 	
 	def load_list_saves(self):
 		#gjследние 300 публикацмй на странице
-		self.list_saves = self.vk_user.method('execute',
-			{'code':
-			'return %s;'%'+'.join(map(lambda s: 'API.wall.get({"offset":%s,"owner_id":%d,"count":100}).items@.text'%(s,-group_id), range(0,300,100)))})
-		self.list_saves.extend(self.vk_user.method('execute',
-			{'code':
-			'return API.wall.get({"owner_id":%d,"filter":"postponed"}).items@.text;'%-group_id}))
+
+		# self.list_saves = self.vk_user.method('execute',
+		# 	{'code':
+		# 	'return %s;'%'+'.join(map(lambda s: 'API.wall.get({"offset":%s,"owner_id":%d,"count":100}).items@.text'%(s,-group_id), range(0,300,100)))})
+		# self.list_saves.extend(self.vk_user.method('execute',
+		# 	{'code':
+		# 	'return API.wall.get({"owner_id":%d,"filter":"postponed"}).items@.text;'%-group_id}))
+		
+		self.list_saves = self.vk_user.method('pages.get',
+						{ 'owner_id': -group_id, 'page_id':PAGE_LOAD_URL_ID, 'need_source':True})['source']#.split()
 		print(len(self.list_saves))
 
 	def load_count_puplic_post(self):
@@ -95,10 +110,18 @@ class Load_Post():
 			self.count_puplic_post += 1
 			# self.connection_db.uppdate_link((link,))
 		# clean_empty_album(albom_video_id,album_id)
-	
+		
+		self.list_saves = self.list_saves +" "+ link
+
 	def return_count_puplic_post(self):
 		return self.count_puplic_post
 	
+
+
+
+
+
+
 def load_img_PIL(src,album_id,img=None):
 	rez = ' ',' ',' '
 	file, size = load_img (src,img)

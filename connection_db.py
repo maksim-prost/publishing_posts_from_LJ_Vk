@@ -66,3 +66,4 @@ class InteractionWithDB():
 
 if __name__ == '__main__':
 	test = InteractionWithDB()
+	print("dsgf")

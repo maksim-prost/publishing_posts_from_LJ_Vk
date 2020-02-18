@@ -42,6 +42,8 @@ class PostBlog(Debug):
 		self.url = url
 		self.creator = creator
 		self.list_link_post =self.get_list_data_for_public_bloger()
+		self.lp.save_list_saves()
+	
 	@classmethod
 	def count_public_post(cls):
 		return cls.lp.return_count_puplic_post()
@@ -86,9 +88,9 @@ class PostBlog(Debug):
 			# title = title.replace('"','')
 			name_post = "{}  от {}".format(' '.join(head.replace('"','').split()),date)
 			print(name_post, PostBlog.lp.list_saves.count(name_post))
-			# if  not name_post in PostBlog.lp.list_saves:
-			if not PostBlog.lp.list_saves.count(name_post):
-				# print()
+			if  not url in PostBlog.lp.list_saves:
+			# if not PostBlog.lp.list_saves.count(name_post):
+						# print()
 				self.function_load(url,head)
 				PostBlog.lp.load_post(name_post,self.post_for_public,url)
 	def load_post(self,url,title,soup,prefix=''):
@@ -242,8 +244,8 @@ class MessageDisplay:
 
 
 if __name__ == '__main__':
-	group_id =165089751 #чат-бот
-	user_id= 117562096
+	group_id = 165089751 #чат-бот
+	user_id = 117562096
 	token = sys.argv[1]
 	main(token, group_id, user_id)
 	
