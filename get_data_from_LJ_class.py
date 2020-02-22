@@ -31,11 +31,13 @@ class Debug:
 		if object.__getattribute__(self, 'chek'): 
 			print(object.__getattribute__(self, '__class__'),attr)
 		return object.__getattribute__(self, attr)
-class PostBlog(Debug):
+
+class PostBlog():
 	lp = None
 	token,group_id, user_id = None, None, None
+	
 	def __init__(self,url,creator,token,group_id, user_id,chek=True):
-		Debug.__init__(self,chek=True)
+		# Debug.__init__(self,chek=True)
 		PostBlog.group_id = PostBlog.group_id or group_id
 		PostBlog.user_id =  PostBlog.user_id or user_id
 		PostBlog.lp = PostBlog.lp or Wrapper(Load_Post(group_id, user_id,token),True)
@@ -47,19 +49,7 @@ class PostBlog(Debug):
 	@classmethod
 	def count_public_post(cls):
 		return cls.lp.return_count_puplic_post()
-# 	def public_post (self):
-# 		for url in self.list_link_post:
-# 			try:
-# 				name_post = 'Eror load post'
-# 				name_post = "{}  от {}".format(self.function_load(url),datetime.now().strftime('%d-%m-%Y')
-# )
-# 				# i = self.count_public_post()
-# 				# print('time_public ', url, time_public(i))
-# 				PostBlog.lp.load_post(name_post,self.post_for_public,url)#,time_public(i))
-# 			except:
-# 				print(traceback.format_exc())
-# 				print(name_post , url, 'ошибка при сохранение, необходим обработчик данной ошибки')
-# 		return self.count_public_post()
+
 	@classmethod
 	def clean_album(cls):
 		cls.lp.clean()
@@ -67,31 +57,20 @@ class PostBlog(Debug):
 		raise Exception('Метод д/б определен в дочернем классе')
 	def get_list_data_for_public(self,list_date,list_header,begining=1,end=None,list_urls=None):
 		soup = BeautifulSoup(get_html(self.url), 'lxml')
-		# print(list_urls)
 		list_urls = list_urls or list_header
+		print(list_urls, soup)
 		return [(url.get('href'),head.text,date.text) 
 			for (url,head,date) in 
 				zip(soup.find_all(*list_urls)[begining:end],
 					soup.find_all(*list_header)[begining:end],
 					soup.find_all(*list_date)[begining:end]) ]
 		
-
-		# dates = [date.text for date in soup.find_all(*list_date)[begining:end]]
-		# headers = [head.text for head in soup.find_all(*list_header)[begining:end]]
-		# urls = [url.get('href') for url in soup.find_all(*list_urls)[begining:end]]
-		# return zip(urls,headers,dates)
-		
 	def public_current_post(self, list_data):
-		# print(list_data)
+		
 		for url,head,date in list_data:
-			# name_post.replace('\n', ' ')
-			# title = title.replace('"','')
 			name_post = "{}  от {}".format(' '.join(head.replace('"','').split()),date)
-			# print(name_post, PostBlog.lp.list_saves.count(name_post))
 			name_post = head.replace('"','')
 			if  not url in PostBlog.lp.list_saves:
-			# if not PostBlog.lp.list_saves.count(name_post):
-						# print()
 				self.function_load(url,head)
 				PostBlog.lp.load_post(name_post,self.post_for_public,url)
 	def load_post(self,url,title,soup,prefix=''):
@@ -140,7 +119,7 @@ class Botya(PostBlog):
 		return title
 class ONB(PostBlog):
 	def __init__(self,*args):
-		PostBlog.__init__(self,'https://onb2017.livejournal.com/','ONB 2017',*args)
+		PostBlog.__init__(self,'https://onb2017.livejournal.com/?skip=50','ONB 2017',*args)
 	def  get_list_data_for_public_bloger(self,begining=2):
 		list_header = ('h3', {'class':"entryunit__title"})
 		list_date = ('span' ,{'class':"date-entryunit__day"})
@@ -215,28 +194,79 @@ class Class1957(PostBlog):
 		self.load_post(url,title,post.find(tag, class_="article-item-body"), self.url)
 		return title
 
+
+		
+
 class Conteiner_Blogs:
 	def __init__(self,*arg):
-		list_blog =  Botya, BlauKraeh, Ballaev, ONB, Remi, Bulgat,
+		list_blog =  Botya, #BlauKraeh, Ballaev, ONB, Remi, Bulgat,
 		# list_blog  = Ballaev,
 		self.blogers=[blog(*arg) for blog in list_blog]
 	
 
+class MonitoringLJ():
+	def __init__(self,token,group_id, user_id):
+		self.lp = Wrapper(Load_Post(group_id, user_id,token),True)
+		# self.list_link_post =self.get_list_data_for_public_bloger()
+			
+	def __call__(self,dir_parser):
+		try:
+			list_public_post = self.get_list_posts(
+									dir_parser['url'],
+									dir_parser['list_date'],
+									dir_parser['list_header'],
+									dir_parser['list_urls'])
+			# print(list_public_post)
+			self.public_current_post(list_public_post,dir_parser['post'],dir_parser['creator'])
+			self.lp.save_list_saves()
+		except:
+			print(traceback.format_exc())
+
+	def get_list_posts(self,url,list_date,list_header,list_urls=None):
+		soup = BeautifulSoup(get_html(url), 'lxml')
+		list_urls = list_urls or list_header
+		return [(url.get('href'),head.text,date.text) 
+			for (url,head,date) in 
+				zip(soup.find_all(*list_urls),
+					soup.find_all(*list_header),
+					soup.find_all(*list_date)) ]
+
+	def public_current_post(self, list_public_post,parser_post,creator):
+		for url,head,date in list_public_post:
+			name_post = head.replace('"','')
+			if  not url in self.lp.list_saves:
+				self.function_load(url,head,parser_post,creator,date)
+				self.lp.load_post(name_post,self.post_for_public,url)
+	
+	def load_post(self,url,title,soup,creator,date,prefix=''):
+		if title:
+			self.post_for_public = format_post(soup,prefix) + '\n[{}| {} от {}]'.format(url,creator,date)			
+
+	def function_load(self,url,title,parser_post,creator,date): 
+		soup = BeautifulSoup(get_html(url), 'lxml')
+		# post =  soup.find(parser_post)
+		post =  soup.find(attrs=parser_post)
+		# print(soup,"---|||----",post, sep='\n')
+		self.load_post(url,title,post,creator,date)
+		return title
+
+
 def main(token, group_id, user_id, creator='ALL',url_creator=None):
-	
-	# message_display = MessageDisplay()
-	# print("Запуск парсинга, в скрытом режиме","Группа Красные блогеры" ,file=message_display )
-	# while True:
-	
-	# print("Запуск парсинга",file=message_display)
+
 	try:
-		CB = Conteiner_Blogs(token,group_id, user_id)
+		1
+		# CB = Conteiner_Blogs(token,group_id, user_id)
 		# CB.public_post()
 	except:
 		print(traceback.format_exc())
 	finally:
 		pass
-		# print("Окончание цикла работы парсинга","Опубликовано {} постов" .format(CB.get_number_public_post()),file=message_display)
+	
+	# CC('https://onb2017.livejournal.com/?skip=30','ONB 2017', ONB_dir_parser,token,group_id, user_id)
+	# CC(Remi_dir_parser,token,group_id, user_id)
+	# Remi(token,group_id, user_id)
+
+
 
 class MessageDisplay:
 	def write(self, message):
@@ -247,6 +277,56 @@ class MessageDisplay:
 if __name__ == '__main__':
 	group_id = 165089751 #чат-бот
 	user_id = 117562096
-	token = sys.argv[1]
-	main(token, group_id, user_id)
+	token = '9a3e3c787c27cdcffb50046fb31b70c4dbb6e1b78dacb8a91d7e1a6e28d6041731d6918fb84822f54483d'
+	# token = sys.argv[1]
+	# main(token, group_id, user_id)
+	'https://m.vk.com/page-165089751_54334503?api_view=f1f5957dfb1e6e4f65b8ff44f8dd15'
+
+		# print("Окончание цикла работы парсинга","Опубликовано {} постов" .format(CB.get_number_public_post()),file=message_display)
 	
+	ONB_dir_parser = {
+		'url':          'https://onb2017.livejournal.com/',
+		'creator':      'ONB 2017',
+		'list_date' : ('span',{'class':"date-entryunit__day"}),
+		'list_header' : ('h3',{'class':"entryunit__head"}),
+		'list_urls' : ('a',{'class':"entryunit__head"}),
+		'soup':None,
+		'post':{'class':'entry-content'},
+
+	}
+	
+	Remi_dir_parser = {
+		'url':'https://remi-meisner.livejournal.com/?skip=2',
+		'creator':'Реми Майнсер',
+		'list_header' : ('a', {'class':"subj-link"}),
+		'list_date' :('abbr', {'class':"updated"} ),
+		'list_urls':  None,
+		'soup':None,
+		'post':{'class':'entry-content'},
+
+	}
+
+	Ballaev = {
+		'url':'https://p-balaev.livejournal.com/',
+		'creator':'Петр Балаев',
+		'list_header' : ('a',{'class':"subj-link"}),
+		'list_date' :('abbr' ,{'class':"updated"}),
+		'list_urls':  None,
+		'soup':None,
+		'post':{'class':'entry-content'},
+
+	}
+
+	Bulgat = {
+		'url':'https://bulgat.livejournal.com/',
+		'creator':'bulgat',
+		'list_date' : ('abbr' ,{'class':"updated"}),
+		'list_header' : ('dt', {'class':"entry-title"}),
+		'list_urls' : ('a', {'class':"subj-link"}),
+		'soup':None,
+		'post':{'class':'entry-content'},
+
+	}
+	public_post = MonitoringLJ(token,group_id, user_id)
+	# public_post.initial_creator(Remi_dir_parser)
+	public_post(ONB_dir_parser)

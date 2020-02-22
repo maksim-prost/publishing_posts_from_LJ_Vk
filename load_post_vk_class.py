@@ -30,7 +30,7 @@ class Load_Post():
 	
 	def save_list_saves(self):
 
-		print("Деструктор за работой",len(self.list_saves))
+		# print("Деструктор за работой",len(self.list_saves))
 		print(self.list_saves)
 		print(self.vk_user.method('pages.save',
 				{'text':self.list_saves, 'group_id': group_id, 'page_id':PAGE_LOAD_URL_ID}))

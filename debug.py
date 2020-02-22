@@ -1,20 +1,10 @@
-	
-def debug_LJ():
-	from initial_scraper import get_html
-	from bs4 import BeautifulSoup
-	url = 'https://onb2017.livejournal.com/'
-	url = 'https://bulgat.livejournal.com/'
-	url = 'https://remi-meisner.livejournal.com/?skip=2'
-	find_all = ('div', {'class':"entry-wrap js-emojis"})
-	find = ('a',{'class':"subj-link"})
-	find_date = ('abbr' ,{'class':"updated"})
-	list_header = ('h3', {'class':"entryunit__title"})
-	list_date = ('span' ,{'class':"date-entryunit__day"})
-	list_date = ('abbr' ,{'class':"updated"})
-	list_header = ('dt', {'class':"entry-title"})
-	return BeautifulSoup(get_html(url),'lxml')#.find_all(*list_header)
-# a class="subj-link"
-# abbr class="updated"
+from initial_scraper import get_html
+from bs4 import BeautifulSoup	
+
+
+def debug_LJ(url, scraper):
+	return BeautifulSoup(get_html(url),'lxml').find_all(scraper)
+
 
 def debug_vk():
 	from vk_api_my import VkApi 
@@ -38,5 +28,30 @@ def debug_vk():
 	return vk.method('execute',{'code':code})
 
 if __name__ == '__main__':
-	# res = debug_vk()
-	soup = debug_LJ()#Оргии влиятельных миллионеров\n  от August 12th, 2019
+	
+	scraper = ('div',{'class':'entry-content'})
+	url=         'https://onb2017.livejournal.com/'
+	creator=     'ONB 2017'
+	list_header = ('a', {'class':"subj-link"})
+	list_date= ('span' ,{'class':"date-entryunit__day"})
+	list_urls=    ('link',{'itemprop':"url"})
+	soup=       ('div',{'class':'b-singlepost-wrapper'})
+	post=        { "class":"b-singlepost-bodywrapper"}
+
+
+	list_header = ('span',{'class':"j-w-entry-subject"})
+	list_date = ('span',{'class':"date-entryunit__day"})
+	list_urls = ('a',{'class':"j-w-comments-count"})
+	soup = BeautifulSoup(get_html(url),'lxml')
+
+'''
+</li></ul></div><header class="entryunit__head"><h3 class="entryunit__title">
+<a href="https://onb2017.livejournal.com/210025.html">А как насчет такого жилья в отличном районе и за умеренную цену?</a>
+</h3>
+</header><div class="entryunit__body">
+<div class="entryunit__text">
+
+
+<span class="date-entryunit__day">14 февраля 2020</span>
+
+'''
