@@ -29,20 +29,36 @@ def debug_vk():
 
 if __name__ == '__main__':
 	
-	scraper = ('div',{'class':'entry-content'})
-	url=         'https://onb2017.livejournal.com/'
-	creator=     'ONB 2017'
-	list_header = ('a', {'class':"subj-link"})
-	list_date= ('span' ,{'class':"date-entryunit__day"})
-	list_urls=    ('link',{'itemprop':"url"})
-	soup=       ('div',{'class':'b-singlepost-wrapper'})
-	post=        { "class":"b-singlepost-bodywrapper"}
+	scraping_dir = {
+		'url':'https://blau-kraehe.livejournal.com/',
+		'creator':'Яна Завацкая',
+		'list_date' : ('abbr', {'class':"datetime"}),
+		'list_header' : ('a', {'class':"subj-link"}),
+		'list_urls' : None,
+		'soup':{'class':'b-singlepost-wrapper'},
+		'post':{'article':"b-singlepost-body entry-content e-content"},
 
+	}
 
-	list_header = ('span',{'class':"j-w-entry-subject"})
-	list_date = ('span',{'class':"date-entryunit__day"})
-	list_urls = ('a',{'class':"j-w-comments-count"})
+	scraping_dir = {
+		'url':          'https://onb2017.livejournal.com/',
+		'creator':      'ONB 2017',
+		'list_date' : ('span',{'class':"date-entryunit__day"}),
+		'list_header' : ('h3',{'class':'entryunit__title'}),
+		'list_urls' : (lambda tag:tag.parent.name=='h3',),
+		'soup':None,
+		'post':{'class':'entry-content'},
+	}
+	url,list_header, list_date, list_urls = scraping_dir['url'],scraping_dir['list_header'], scraping_dir['list_date'], scraping_dir['list_urls']
+	list_urls = list_urls or list_header
+	# url = 'https://money.yandex.ru/moneylandia'
 	soup = BeautifulSoup(get_html(url),'lxml')
+	# from smenaIP import requests_random_IP
+	# def get_html(url, stream = False):
+	# 	requests = requests_random_IP()
+	# 	if stream: return requests.get(url, stream = True)
+	# 	return requests.get(url).text
+
 
 '''
 </li></ul></div><header class="entryunit__head"><h3 class="entryunit__title">
